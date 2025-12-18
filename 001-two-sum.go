@@ -5,15 +5,14 @@ package main
 import "fmt"
 
 func twoSum(nums []int, target int) []int {
-	for i_, i := range nums {
-
-		for j_, j := range nums {
-			if i_ != j_ && i + j == target {
-				return []int{i_, j_}
-			}
+	var cache  = make(map[int]int)
+	for i, n := range nums {
+		if j, ok := cache[n]; ok {
+			return []int{j, i}
 		}
+		cache[target - n] = i
 	}
-	return []int{0, 0}
+	return nil
 }
 
 func main() {
