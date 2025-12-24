@@ -8,30 +8,17 @@ func removeDuplicates(nums []int) int {
 	if len(nums) <= 1 {
 		return len(nums)
 	}
-	i := 1
-	k := 1
-	for {
-		if i == len(nums) - 1 || nums[i] == nums[len(nums) - 1] {
-			break
-		}
-		if nums[i] == nums[i - 1] {
-			for shift := 1; i + shift < len(nums); shift++ {
-				nums[i + shift - 1] = nums[i + shift]
-			}
-		} 
-		if nums[i] != nums[i - 1] {
-			i ++
-			k ++
+	w := 0
+	for r := 1; r < len(nums); r++ {
+		if nums[r] != nums[w] {
+			w++
+			nums[w] = nums[r]
 		}
 	}
-	if nums[i] != nums[i - 1] {
-		i ++
-		k ++
-	}
-	return k
+	return w + 1
 }
 
 func main() {
-	var data []int = []int{1, 1, 2, 3, 3, 3, 3, 4}
+	var data []int = []int{1, 1, 2}
 	fmt.Println(removeDuplicates(data), data)
 }
