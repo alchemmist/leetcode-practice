@@ -4,22 +4,22 @@ package main
 
 import (
 	"fmt"
-	"strings"
 )
 
 func lengthOfLongestSubstring(s string) int {
 	l := 0
 	r := 0
 	result := 0
+	lastPos := make(map[byte]int)
 	for l < len(s) && r < len(s) {
-		if strings.Contains(s[l:r], string(s[r])) {
-			result = max(r-l, result)
-			l++
-		} else {
-			r++
+		p, ok := lastPos[s[r]]
+		if ok && p >= l {
+			l = p + 1
 		}
+		lastPos[s[r]] = r
+		result = max(r-l+1, result)
+		r++
 	}
-	result = max(r-l, result)
 
 	return result
 }
