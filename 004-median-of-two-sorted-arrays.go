@@ -5,6 +5,7 @@ package main
 import "fmt"
 
 func findMedianSortedArrays(nums1 []int, nums2 []int) float64 {
+	// TODO: imporove to O(log(m + n))
 	nums := []int{}
 	i := 0
 	j := 0
