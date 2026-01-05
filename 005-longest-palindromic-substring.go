@@ -5,32 +5,33 @@ package main
 import "fmt"
 
 func longestPalindrome(s string) string {
-	s_odd := "|"
+	odd := []rune{'|'}
 	for _, chr := range s {
-		s_odd += string(chr) + "|"
+		odd = append(odd, chr, '|')
 	}
 
-	maxPal := ""
-	for i := 0; i < len(s_odd); i++ {
-		for shift := 0; i+shift < len(s_odd) && 0 <= i-shift; shift++ {
-			if s_odd[i+shift] == s_odd[i-shift] {
-				if len(s_odd[i-shift:i+shift+1]) > len(maxPal) {
-					maxPal = s_odd[i-shift : i+shift+1]
-				}
-			} else {
+	bestL, bestR := 0, 0
+
+	for i := 0; i < len(odd); i++ {
+		for shift := 0; i-shift >= 0 && i+shift < len(odd); shift++ {
+			if odd[i-shift] != odd[i+shift] {
 				break
+			}
+			if (i + shift - (i - shift)) > (bestR - bestL) {
+				bestL = i - shift
+				bestR = i + shift
 			}
 		}
 	}
-	res := ""
-	for _, letter := range maxPal {
-		if letter != '|' {
-			res = res + string(letter)
+	res := make([]rune, 0, bestR-bestL+1)
+	for _, r := range odd[bestL : bestR+1] {
+		if r != '|' {
+			res = append(res, r)
 		}
 	}
-	return res
+	return string(res)
 }
 
 func main() {
-	fmt.Println(longestPalindrome("babad"))
+	fmt.Println(longestPalindrome("бабад"))
 }
