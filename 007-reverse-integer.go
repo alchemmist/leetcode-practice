@@ -7,14 +7,6 @@ import (
 	"math"
 )
 
-func pow10(n int) int {
-	r := 1
-	for range n {
-		r *= 10
-	}
-	return r
-}
-
 func reverse(x int) int {
 	absX := max(x, -x)
 	result := 0
