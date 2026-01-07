@@ -7,62 +7,37 @@ import (
 	"math"
 )
 
-func digitToInt(d rune) int {
-	switch d {
-	case '0':
-		return 0
-	case '1':
-		return 1
-	case '2':
-		return 2
-	case '3':
-		return 3
-	case '4':
-		return 4
-	case '5':
-		return 5
-	case '6':
-		return 6
-	case '7':
-		return 7
-	case '8':
-		return 8
-	case '9':
-		return 9
-	}
-	return -1
-}
-
 func myAtoi(s string) int {
 	negative := 1
 	var result int = 0
 	start := true
-	for _, d := range s {
-		if start && d == ' ' {
+	for i := 0; i < len(s); i++ {
+		if start && s[i] == ' ' {
 			continue
 		}
-		if start && d == '-' {
+		if start && s[i] == '-' {
 			negative = -1
 			start = false
 			continue
-		} else if start && d == '+' {
+		} else if start && s[i] == '+' {
 			negative = 1
 			start = false
 			continue
 		}
-		if digitToInt(d) == -1 {
+		if !(s[i] >= '0' && s[i] <= '9') {
 			break
 		} else {
 			start = false
 		}
-		if math.MinInt32 >= 10*result*negative-digitToInt(d) {
+		dInt := int(s[i] - '0')
+		if math.MinInt32 >= 10*result*negative-dInt {
 			return math.MinInt32
 		}
-		if math.MaxInt32 <= 10*result+digitToInt(d)*negative {
+		if math.MaxInt32 <= 10*result+dInt*negative {
 			return math.MaxInt32
 		}
 		result *= 10
-		result += digitToInt(d)
+		result += dInt
 	}
 
 	result *= negative
