@@ -4,20 +4,20 @@ package main
 
 import (
 	"fmt"
-	"sort"
-	"strings"
 )
 
-func SortString(w string) string {
-	s := strings.Split(w, "")
-	sort.Strings(s)
-	return strings.Join(s, "")
+func frequencyArray(s string) [26]int {
+	var result [26]int
+	for _, chr := range s {
+		result[chr-'a'] += 1
+	}
+	return result
 }
 
 func groupAnagrams(strs []string) [][]string {
-	groups := map[string][]string{}
+	groups := map[[26]int][]string{}
 	for _, s := range strs {
-		sS := SortString(s)
+		sS := frequencyArray(s)
 		groups[sS] = append(groups[sS], s)
 	}
 	result := make([][]string, 0, len(groups))
