@@ -1,62 +1,73 @@
-#include <stdbool.h>
 #include <stdio.h>
+#include <stdbool.h>
 #include <stdlib.h>
 
-typedef struct Node {
-    int value;
-    struct Node *next;
-} Node;
-
 typedef struct {
+    int *data;
     int length;
     int capacity;
-    int *stack;
+} Stack;
+
+typedef struct {
+    Stack in;
+    Stack out;
 } MyQueue;
 
 MyQueue *myQueueCreate() {
     MyQueue *m = calloc(1, sizeof(*m));
-    m->length = 0;
-    m->capacity = 1;
-    m->stack = calloc(m->capacity, sizeof(int));
     return m;
 }
 
 void myQueuePush(MyQueue *obj, int x) {
-    if (obj->capacity - obj->length <= 1) {
-        obj->capacity *= 2;
-        obj->stack = realloc(obj->stack, obj->capacity * sizeof(*obj->stack));
+    if (obj->in.capacity == 0) {
+        obj->in.data = calloc(1, sizeof(*obj->in.data));
+        obj->in.capacity = 1;
+    } else if (obj->in.capacity - obj->in.length <= 1) {
+        obj->in.capacity *= 2;
+        obj->in.data =
+            realloc(obj->in.data, obj->in.capacity * sizeof(*obj->in.data));
     }
-    obj->stack[obj->length] = x;
-    obj->length++;
+    obj->in.data[obj->in.length] = x;
+    obj->in.length++;
+}
+
+void _transferIn2Out(MyQueue *obj) {
+    if (obj->out.capacity == 0) {
+        obj->out.capacity = obj->in.length;
+        obj->out.data = calloc(obj->in.length, sizeof(*obj->out.data));
+    } else if (obj->out.capacity < obj->in.length) {
+        obj->out.capacity = obj->in.length;
+        obj->out.data =
+            realloc(obj->out.data, obj->out.capacity * sizeof(*obj->out.data));
+    }
+    while (obj->in.length > 0) {
+        obj->out.data[obj->out.length] = obj->in.data[--obj->in.length];
+        obj->out.length++;
+    }
+    obj->in.capacity = 0;
 }
 
 int myQueuePop(MyQueue *obj) {
-    if (obj->length <= 0) {
-        return -1;
+    if (obj->out.length <= 0) {
+        _transferIn2Out(obj);
     }
-
-    int value = obj->stack[0];
-    for (int i = 1; i < obj->length; i++) {
-        obj->stack[i - 1] = obj->stack[i];
-    }
-    obj->length--;
-
-    return value;
+    return obj->out.data[--obj->out.length];
 }
 
 int myQueuePeek(MyQueue *obj) {
-    if (obj->length <= 0) {
-        return -1;
+    if (obj->out.length <= 0) {
+        _transferIn2Out(obj);
     }
-    return obj->stack[0];
+    return obj->out.data[obj->out.length - 1];
 }
 
 bool myQueueEmpty(MyQueue *obj) {
-    return (obj->length == 0);
+    return obj->in.length == 0 && obj->out.length == 0;
 }
 
 void myQueueFree(MyQueue *obj) {
-    free(obj->stack);
+    free(obj->out.data);
+    free(obj->in.data);
     free(obj);
 }
 
