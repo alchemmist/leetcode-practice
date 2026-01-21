@@ -10,13 +10,19 @@ type ListNode struct {
 }
 
 func detectCycle(head *ListNode) *ListNode {
-    mem := map[*ListNode]struct{}{}
-    for head != nil {
-        if _, ok := mem[head]; ok {
-            return head
+    fast := head
+    slow := head
+    for fast != nil && fast.Next != nil {
+        fast = fast.Next.Next
+        slow = slow.Next
+        if slow == fast {
+            slow = head
+			for slow != fast {
+				slow = slow.Next
+				fast = fast.Next
+			}
+			return slow
         }
-        mem[head] = struct{}{}
-        head = head.Next
     }
     return nil
 }
